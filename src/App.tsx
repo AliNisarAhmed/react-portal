@@ -5,6 +5,8 @@ import { Inspection } from './types';
 import './tailwind.output.css';
 import Table from './Table';
 
+// For TS Support https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-table#example-type-file
+
 function App() {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [inspections, setInspections] = useState<Inspection[]>([]);
@@ -14,7 +16,6 @@ function App() {
 
 		async function fetchData() {
 			const data = await getInspections();
-			console.log('data :>> ', data);
 			setInspections(data);
 			setLoading(false);
 		}
@@ -81,7 +82,7 @@ function App() {
 	}
 
 	return (
-		<div className="p-10 container mx-auto">
+		<div className="p-10 container mx-auto h-full">
 			<Table data={inspections} columns={columns} />
 		</div>
 	);
