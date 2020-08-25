@@ -16,7 +16,11 @@ interface IProps {
 	columns: any[];
 }
 
+// TS Example: https://github.com/tannerlinsley/react-table/issues/1591
+
 // TS Support: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-table
+
+// TS Example: https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx
 
 const Table: React.FC<IProps> = ({ data, columns }) => {
 	const {
@@ -34,12 +38,8 @@ const Table: React.FC<IProps> = ({ data, columns }) => {
 		pageOptions,
 		pageCount,
 		setPageSize,
-		page
-	} = useTable<Inspection>(
-		{ columns, data },
-		useSortBy,
-		usePagination
-	);
+		page,
+	} = useTable<Inspection>({ columns, data }, useSortBy, usePagination);
 
 	return (
 		<React.Fragment>
@@ -72,7 +72,7 @@ const Table: React.FC<IProps> = ({ data, columns }) => {
 						return (
 							<tr
 								{...row.getRowProps()}
-								className="border-t-2 border-blue-400 last:border-b-2 border-r-2 border-l-2 odd:bg-gray-100"
+								className="border-t-2 border-blue-400 last:border-b-2 border-r-2 border-l-2 odd:bg-gray-100 hover:bg-gray-200"
 							>
 								{row.cells.map((cell: Cell<Inspection, any>) => (
 									<td
@@ -87,19 +87,24 @@ const Table: React.FC<IProps> = ({ data, columns }) => {
 					})}
 				</tbody>
 			</table>
-			<div className="pagination flex justify-between">
-				<button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-					{'<<'}
-				</button>{' '}
-				<button onClick={() => previousPage()} disabled={!canPreviousPage}>
-					{'<'}
-				</button>{' '}
-				<button onClick={() => nextPage()} disabled={!canNextPage}>
-					{'>'}
-				</button>{' '}
-				<button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-					{'>>'}
-				</button>{' '}
+			<div className="pagination flex justify-between bg-blue-600 text-black">
+				<div>
+					<button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+						{'<<'}
+					</button>{' '}
+					<button onClick={() => previousPage()} disabled={!canPreviousPage}>
+						{'<'}
+					</button>{' '}
+					<button onClick={() => nextPage()} disabled={!canNextPage}>
+						{'>'}
+					</button>{' '}
+					<button
+						onClick={() => gotoPage(pageCount - 1)}
+						disabled={!canNextPage}
+					>
+						{'>>'}
+					</button>{' '}
+				</div>
 				<span>
 					Page{' '}
 					<strong>

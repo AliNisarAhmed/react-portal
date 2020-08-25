@@ -1,25 +1,20 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { getInspections } from './api';
 import { Inspection } from './types';
+import { useQuery } from 'react-query';
 
 import './tailwind.output.css';
 import Table from './Table';
+import { ReactQueryDevtools } from 'react-query-devtools';
 
 // For TS Support https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-table#example-type-file
 
 function App() {
-	const [loading, setLoading] = useState<boolean>(true);
-	const [inspections, setInspections] = useState<Inspection[]>([]);
 
-	useEffect(() => {
-		fetchData();
-
-		async function fetchData() {
-			const data = await getInspections();
-			setInspections(data);
-			setLoading(false);
-		}
-	}, []);
+	const { data: inspections, isLoading, isError } = useQuery(
+		'getInspections',
+		getInspections
+	);
 
 	const columns = useMemo(
 		() => [
@@ -73,7 +68,7 @@ function App() {
 		[]
 	);
 
-	if (loading) {
+	if (isLoading || !inspections) {
 		return (
 			<div>
 				<h2>Loading...</h2>
@@ -82,9 +77,12 @@ function App() {
 	}
 
 	return (
-		<div className="p-10 container mx-auto h-full">
-			<Table data={inspections} columns={columns} />
-		</div>
+		<>
+			<div className="p-10 container mx-auto h-full">
+				<Table data={inspections} columns={columns} />
+			</div>
+			<ReactQueryDevtools />
+		</>
 	);
 }
 
