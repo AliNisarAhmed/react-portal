@@ -10,7 +10,6 @@ import { ReactQueryDevtools } from 'react-query-devtools';
 // For TS Support https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-table#example-type-file
 
 function App() {
-
 	const { data: inspections, isLoading, isError } = useQuery(
 		'getInspections',
 		getInspections
@@ -68,10 +67,18 @@ function App() {
 		[]
 	);
 
-	if (isLoading || !inspections) {
+	if (isLoading) {
+		return (
+			<div className="container">
+				<h2 className="mx-auto text-center text-2xl">Loading...</h2>
+			</div>
+		);
+	}
+
+	if (isError) {
 		return (
 			<div>
-				<h2>Loading...</h2>
+				<h2 className="mx-auto text-center text-2xl">An Error occurred</h2>
 			</div>
 		);
 	}
@@ -79,7 +86,7 @@ function App() {
 	return (
 		<>
 			<div className="p-10 container mx-auto h-full">
-				<Table data={inspections} columns={columns} />
+				<Table data={inspections ?? []} columns={columns} />
 			</div>
 			<ReactQueryDevtools />
 		</>
