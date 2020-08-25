@@ -17,13 +17,27 @@ function App() {
 
 	const columns = useMemo(
 		() => [
-			{ Header: '#', id: 'rowNumber', accessor: (_: any, i: number) => i },
+			{
+				Header: '#',
+				id: 'rowNumber',
+				accessor: (_: any, i: number) => i,
+				disableResizing: false,
+				minWidth: 35,
+				maxWidth: 35,
+				width: 35,
+			},
 
 			{
 				Header: 'Customer Information',
 				columns: [
 					{ Header: 'Customer Name', accessor: 'customerName' },
-					{ Header: 'Customer Email', accessor: 'customerEmail' },
+					{
+						Header: 'Customer Email',
+						accessor: 'customerEmail',
+						minWidth: 200,
+						maxWidth: 400,
+						width: 200,
+					},
 				],
 			},
 			{
@@ -34,6 +48,9 @@ function App() {
 						id: 'user',
 						accessor: (row: Inspection) =>
 							row.user!.firstName + ' ' + row.user!.lastName,
+						minWidth: 100,
+						width: 100,
+						maxWidth: 200,
 					},
 				],
 			},
@@ -43,6 +60,9 @@ function App() {
 					{
 						Header: 'Inspection Id',
 						accessor: 'id',
+						width: 100,
+						minWidth: 100,
+						maxWidth: 100,
 					},
 					{
 						Header: 'Location',

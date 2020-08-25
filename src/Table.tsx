@@ -8,6 +8,8 @@ import {
 	useSortBy,
 	useFilters,
 	usePagination,
+	useResizeColumns,
+	useFlexLayout,
 } from 'react-table';
 import { Inspection } from './types';
 
@@ -23,6 +25,16 @@ interface IProps {
 // TS Example: https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx
 
 const Table: React.FC<IProps> = ({ data, columns }) => {
+	const defaultColumn = React.useMemo(
+		() => ({
+			// When using the useFlexLayout:
+			minWidth: 30, // minWidth is only used as a limit for resizing
+			width: 150, // width is used for both the flex-basis and flex-grow
+			maxWidth: 200, // maxWidth is only used as a limit for resizing
+		}),
+		[]
+	);
+
 	const {
 		getTableBodyProps,
 		getTableProps,
@@ -39,16 +51,22 @@ const Table: React.FC<IProps> = ({ data, columns }) => {
 		pageCount,
 		setPageSize,
 		page,
-	} = useTable<Inspection>({ columns, data }, useSortBy, usePagination);
+	} = useTable<Inspection>(
+		{ columns, data, defaultColumn },
+		useSortBy,
+		usePagination,
+		useResizeColumns,
+		useFlexLayout
+	);
 
 	return (
 		<React.Fragment>
-			<table {...getTableProps()} className="table h-full">
-				<thead className="table-header-group">
+			<div {...getTableProps()} className="table h-full">
+				<div className="table-header-group">
 					{headerGroups.map((headerGroup: any) => (
-						<tr {...headerGroup.getHeaderGroupProps()}>
+						<div {...headerGroup.getHeaderGroupProps()} className="tr">
 							{headerGroup.headers.map((column: any) => (
-								<th
+								<div
 									{...column.getHeaderProps(column.getSortByToggleProps())}
 									className="border-2 border-blue-400 bg-gray-300 px-2"
 								>
@@ -60,33 +78,39 @@ const Table: React.FC<IProps> = ({ data, columns }) => {
 												? '\n🔽'
 												: '\n🔼'
 											: ''}
+										<div
+											{...column.getResizerProps()}
+											className={`resizer ${
+												column.isResized ? 'isResizing' : ''
+											}`}
+										/>
 									</React.Fragment>
-								</th>
+								</div>
 							))}
-						</tr>
+						</div>
 					))}
-				</thead>
-				<tbody {...getTableBodyProps()}>
+				</div>
+				<div {...getTableBodyProps()} className="tbody">
 					{page.map((row: any) => {
 						prepareRow(row);
 						return (
-							<tr
+							<div
 								{...row.getRowProps()}
 								className="border-t-2 border-blue-400 last:border-b-2 border-r-2 border-l-2 odd:bg-gray-100 hover:bg-gray-200"
 							>
 								{row.cells.map((cell: Cell<Inspection, any>) => (
-									<td
+									<div
 										{...cell.getCellProps()}
-										className="border-r-2 border-blue-400 text-center p-2"
+										className="border-r-2 border-blue-400 text-center p-2 td"
 									>
 										{cell.render('Cell')}
-									</td>
+									</div>
 								))}
-							</tr>
+							</div>
 						);
 					})}
-				</tbody>
-			</table>
+				</div>
+			</div>
 			<div className="pagination flex justify-between bg-blue-600 text-black">
 				<div>
 					<button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
